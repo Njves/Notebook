@@ -5,13 +5,15 @@ import com.example.egor.notebook.Databases.SQLiteFileListHandler;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class FileManager {
 
     private File file;
     private SQLiteFileListHandler fileListDB;
     private ArrayList<File> mFileArrayList = new ArrayList<>();
-    private Context context;
+    private  Context context;
     private BufferedWriter bufferedFileOutput;
     private File currentFile;
 
@@ -41,6 +43,7 @@ public class FileManager {
     }
     public String writeInFile(File file, String text) throws IOException {
         bufferedFileOutput = new BufferedWriter(new OutputStreamWriter(context.openFileOutput(file.getName(), Context.MODE_PRIVATE)));
+
         bufferedFileOutput.write(text);
         bufferedFileOutput.flush();
         bufferedFileOutput.close();
@@ -54,9 +57,8 @@ public class FileManager {
     private void setCurrentDocument(File currentDocument) {
         this.currentFile = currentDocument;
     }
-    public boolean isFileExistsOnSdCard()
+    public String[] getFilesNames()
     {
-
-        return false;
+        return context.fileList();
     }
 }

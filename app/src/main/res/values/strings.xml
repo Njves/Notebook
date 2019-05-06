@@ -3,4 +3,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="file_list_holder_name">Имя файла: </string>
+    <string name="file_list_holder_extension">Расширение: </string>
+    <string name="file_list_holder_date">Дата создания: </string>
 </resources>

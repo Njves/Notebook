@@ -23,7 +23,6 @@ import java.util.Arrays;
 public class WritingFragment extends Fragment {
     public static final String TAG = WritingFragment.class.getSimpleName();
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private EditText mInputTitleFile;
     private EditText mInputFieldEditText;
     private TextView mFileContentTextView;
@@ -45,11 +44,10 @@ public class WritingFragment extends Fragment {
 
 
 
-    public static WritingFragment newInstance(String param1, String param2) {
+    public static WritingFragment newInstance(String param1) {
         WritingFragment fragment = new WritingFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,7 +57,6 @@ public class WritingFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -72,7 +69,7 @@ public class WritingFragment extends Fragment {
         mWriteOnFileButton = view.findViewById(R.id.write);
         mFileContentTextView = view.findViewById(R.id.file_content);
         mInputTitleFile = view.findViewById(R.id.input_file_name);
-
+        mInputTitleFile.setText(mParam1);
         mWriteOnFileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
