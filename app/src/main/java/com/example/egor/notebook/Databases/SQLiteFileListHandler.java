@@ -57,6 +57,7 @@ public class SQLiteFileListHandler extends SQLiteOpenHelper {
         boolean isFileSdCard = file.getAbsolutePath().contains("sd_card");
         long fileSize = file.length();
         int fileHash = file.hashCode();
+        Log.d(TAG, "Имя: " + fileName + ", Дата: " + fileDate + ", Путь:" + filePath + ", Размер: " + fileSize + ", Хеш: " + fileHash);
         ContentValues cv = new ContentValues();
         cv.put(FILE_NAME_FIELD, fileName);
         cv.put(CREATION_DATE_FIELD, fileDate);
@@ -64,11 +65,30 @@ public class SQLiteFileListHandler extends SQLiteOpenHelper {
         cv.put(SD_CARD_EXIST_FIELD, isFileSdCard);
         cv.put(FILE_SIZE_FIELD, fileSize);
         cv.put(HASH_FIELD, fileHash);
+
         SQLiteDatabase db = this.getWritableDatabase();
         long id = db.insert(TABLE_NAME, null, cv);
         Log.i(TAG, "Inset row - " + id);
 
 
+    }
+    public void getTable()
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        while(cursor.moveToNext())
+        {
+            String id = cursor.getString(cursor.getColumnIndex(ID_FIELD));
+            String name = cursor.getString(cursor.getColumnIndex(FILE_NAME_FIELD));
+            String date = cursor.getString(cursor.getColumnIndex(CREATION_DATE_FIELD));
+            String path = cursor.getString(cursor.getColumnIndex(SD_CARD_EXIST_FIELD));
+            String size = cursor.getString(cursor.getColumnIndex(FILE_SIZE_FIELD));
+            String hash = cursor.getString(cursor.getColumnIndex(HASH_FIELD));
+            Log.d(TAG, "Номер строки: " + id +", Имя: " + name + ", Дата: " + date + ", Путь:" + path + ", Размер: " + size + ", Хеш: " + hash);
+
+        }
     }
 
 

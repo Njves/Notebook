@@ -32,7 +32,7 @@ public class WritingFragment extends Fragment {
     private FileInputStream mFileInputStream;
     private Context context;
     private Thread rxThread;
-    private String mParam1;
+    private String mParamFileName;
     private String mParam2;
     private MenuFragmentInteraction mListener;
     private FileManager mFileManager;
@@ -43,7 +43,7 @@ public class WritingFragment extends Fragment {
     }
 
 
-
+    //Fabric method
     public static WritingFragment newInstance(String param1) {
         WritingFragment fragment = new WritingFragment();
         Bundle args = new Bundle();
@@ -56,7 +56,7 @@ public class WritingFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParamFileName = getArguments().getString(ARG_PARAM1);
         }
     }
 
@@ -69,7 +69,8 @@ public class WritingFragment extends Fragment {
         mWriteOnFileButton = view.findViewById(R.id.write);
         mFileContentTextView = view.findViewById(R.id.file_content);
         mInputTitleFile = view.findViewById(R.id.input_file_name);
-        mInputTitleFile.setText(mParam1);
+
+        mInputTitleFile.setText(mParamFileName);
         mWriteOnFileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,9 +80,8 @@ public class WritingFragment extends Fragment {
 //                            writer.write(mInputFieldEditText.getText().toString());
 //                            writer.flush();
                             FileManager fileManager = new FileManager(context);
-                            SQLiteFileListHandler sql = new SQLiteFileListHandler(context);
-                            sql.addFileOnDB(fileManager.makeDocument(mInputTitleFile.getText().toString(), ".txt"));
-
+                            fileManager.makeDocument(mInputTitleFile.getText().toString(), ".txt");
+//                            TODO:Replace column in DB
                             Toast.makeText(context,  fileManager.writeInFile(mInputFieldEditText.getText().toString()), Toast.LENGTH_SHORT).show();
                             
 

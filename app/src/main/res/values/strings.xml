@@ -6,4 +6,9 @@
     <string name="file_list_holder_name">Имя файла: </string>
     <string name="file_list_holder_extension">Расширение: </string>
     <string name="file_list_holder_date">Дата создания: </string>
+
+    <string name="file_create_placeholder_name_dialog">Имя файла</string>
+    <string name="file_create_placeholder_extension_dialog">Рассширение файла</string>
+    <string name="file_create_text_create_dialog">Создать файл</string>
+    <string name="file_create_text_canel_dialog">Отмена</string>
 </resources>

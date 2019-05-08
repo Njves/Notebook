@@ -3,25 +3,27 @@ package com.example.egor.notebook.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 
 import android.widget.Button;
 import com.example.egor.notebook.Adapters.FileListAdapter;
+import com.example.egor.notebook.Fragments.Dialogs.CreateFileDialog;
 import com.example.egor.notebook.Managers.FileManager;
 import com.example.egor.notebook.R;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public class MenuFragment extends Fragment {
+public class MenuFragment extends Fragment  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -30,6 +32,7 @@ public class MenuFragment extends Fragment {
     private RecyclerView mFileRecyclerView;
     private FileManager mFileManager;
     private Context context;
+    private FloatingActionButton addFileFab;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -56,8 +59,9 @@ public class MenuFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -66,18 +70,43 @@ public class MenuFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_menu, container, false);
         mFileManager = new FileManager(getContext());
+        addFileFab = v.findViewById(R.id.add_fab_menu);
         mFileRecyclerView = v.findViewById(R.id.file_list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mFileRecyclerView.setLayoutManager(linearLayoutManager);
 
         FileListAdapter messageListAdapter = new FileListAdapter(getContext(), mFileManager.getFilesNames());
         mFileRecyclerView.setAdapter(messageListAdapter);
+        Log.d(TAG, Arrays.toString(context.fileList()));
+        addFileFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment dialog = new CreateFileDialog();
+                dialog.show(getActivity().getSupportFragmentManager(), null);
+            }
+        });
 
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_file_create, menu);
+        menu.getItem(0).setIcon(R.drawable.ic_add_circle_black_24dp);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.add_file:
+            {
+
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -97,6 +126,8 @@ public class MenuFragment extends Fragment {
         mListener = null;
     }
 
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -109,6 +140,10 @@ public class MenuFragment extends Fragment {
      */
     public interface OnMenuFragmentDataListener {
         void onCreateFragment(Fragment fragment);
+
+    }
+    public interface OnAddFileOnListAdapter
+    {
 
     }
 }

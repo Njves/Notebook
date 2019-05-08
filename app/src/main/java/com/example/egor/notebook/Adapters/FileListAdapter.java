@@ -1,6 +1,7 @@
 package com.example.egor.notebook.Adapters;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,12 +23,14 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileLi
     private String[] fileNames;
     private FileManager mFileManager;
     private FileListListener mListener;
+
     private int count;
 
     public FileListAdapter(Context context, String[] fileNames)
     {
         this.context = context;
         this.fileNames = fileNames;
+        mFileManager = new FileManager(context);
     }
     @NonNull
     @Override
@@ -84,10 +87,13 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileLi
         {
             if(i>=0)
             {
-                mTextViewFileName.setText(mTextViewFileName.getText().toString() + fileNames[i]);
-                mTextViewExtension.setText(mTextViewExtension.getText().toString());
+                Resources res = context.getResources();
+                String placeholder = res.getString(R.string.file_create_placeholder_name_dialog);
+                mTextViewFileName.setText(placeholder + " " +  fileNames[i]);
+                mTextViewExtension.setText(mFileManager.getFileExtension(fileNames[1]));
             }
 
         }
+
     }
 }

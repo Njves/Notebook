@@ -1,6 +1,7 @@
 package com.example.egor.notebook.Managers;
 
 import android.content.Context;
+import android.util.Log;
 import com.example.egor.notebook.Databases.SQLiteFileListHandler;
 
 import java.io.*;
@@ -20,6 +21,7 @@ public class FileManager {
     public FileManager(Context context)
     {
         this.context = context;
+
     }
     public void addFile(File file)
     {
@@ -29,7 +31,8 @@ public class FileManager {
 
         File file = new File(title+extension);
         bufferedFileOutput = new BufferedWriter(new OutputStreamWriter(context.openFileOutput(file.getName(), Context.MODE_PRIVATE)));
-        addFile(file);
+        fileListDB = new SQLiteFileListHandler(context);
+        fileListDB.addFileOnDB(file);
         currentFile = file;
         return file;
 
@@ -59,6 +62,28 @@ public class FileManager {
     }
     public String[] getFilesNames()
     {
+        Log.d("FileManager", Arrays.toString(context.fileList()));
         return context.fileList();
+    }
+    public String getFileExtension(String fileName)
+    {
+        String extension = "";
+
+        int i = fileName.lastIndexOf('.');
+        if (i > 0) {
+            extension = fileName.substring(i+1);
+        }
+        else
+        {
+//            TODO: Create error list and code
+            extension = "Неизвестное рассширение";
+        }
+        return extension;
+    }
+
+    public class FileCreator
+    {
+        public String fileName;
+        public String fileExtension;
     }
 }
