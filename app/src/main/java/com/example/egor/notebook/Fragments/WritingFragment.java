@@ -35,7 +35,7 @@ public class WritingFragment extends Fragment {
     private String mParamFileName;
     private String mParam2;
     private MenuFragmentInteraction mListener;
-    private FileManager mFileManager;
+
     public static final String FILE_NAME = "text.txt";
 
     public WritingFragment() {
@@ -79,10 +79,10 @@ public class WritingFragment extends Fragment {
 //                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(context.openFileOutput(mInputTitleFile.getText().toString() + ".txt", Context.MODE_PRIVATE)));
 //                            writer.write(mInputFieldEditText.getText().toString());
 //                            writer.flush();
-                            FileManager fileManager = new FileManager(context);
-                            fileManager.makeDocument(mInputTitleFile.getText().toString(), ".txt");
+
+                            FileManager.getInstance(context).makeDocument(mInputTitleFile.getText().toString(), ".txt");
 //                            TODO:Replace column in DB
-                            Toast.makeText(context,  fileManager.writeInFile(mInputFieldEditText.getText().toString()), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context,  FileManager.getInstance(context).writeInFile(mInputFieldEditText.getText().toString()), Toast.LENGTH_SHORT).show();
                             
 
 

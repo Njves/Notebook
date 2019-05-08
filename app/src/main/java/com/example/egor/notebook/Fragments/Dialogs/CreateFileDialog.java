@@ -44,6 +44,7 @@ public class CreateFileDialog extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 if(mFileNameEditText.getText().toString() != " " || mFileExtensionEditText.getText().toString() != " ") {
                     dialogListener.createFile(mFileNameEditText.getText().toString(), mFileExtensionEditText.getText().toString());
+
                 }
                 else
                 {
@@ -55,7 +56,7 @@ public class CreateFileDialog extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
 
             }
-        });
+        }).setTitle("Создать файл").create();
         return dialogBuilder.create();
     }
     public interface OnCreateFileDialogListener

@@ -21,7 +21,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileLi
 {
     private Context context;
     private String[] fileNames;
-    private FileManager mFileManager;
+
     private FileListListener mListener;
 
     private int count;
@@ -30,7 +30,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileLi
     {
         this.context = context;
         this.fileNames = fileNames;
-        mFileManager = new FileManager(context);
+
     }
     @NonNull
     @Override
@@ -88,9 +88,12 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileLi
             if(i>=0)
             {
                 Resources res = context.getResources();
-                String placeholder = res.getString(R.string.file_create_placeholder_name_dialog);
-                mTextViewFileName.setText(placeholder + " " +  fileNames[i]);
-                mTextViewExtension.setText(mFileManager.getFileExtension(fileNames[1]));
+                String placeholderName = res.getString(R.string.file_create_placeholder_name_dialog);
+                String placeholderExtension = res.getString(R.string.file_list_holder_extension);
+                String placeHolderDate = res.getString(R.string.file_list_holder_date);
+                mTextViewFileName.setText(placeholderName + " " +  fileNames[i]);
+                mTextViewExtension.setText(placeholderExtension+FileManager.getInstance(context).getFileExtension(fileNames[i]));
+                mTextViwFileDate.setText(placeHolderDate);
             }
 
         }

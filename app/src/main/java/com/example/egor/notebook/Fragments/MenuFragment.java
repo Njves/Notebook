@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.*;
 
 import android.widget.Button;
+import android.widget.Toast;
 import com.example.egor.notebook.Adapters.FileListAdapter;
 import com.example.egor.notebook.Fragments.Dialogs.CreateFileDialog;
 import com.example.egor.notebook.Managers.FileManager;
@@ -23,14 +24,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public class MenuFragment extends Fragment  {
+public class MenuFragment extends Fragment implements CreateFileDialog.OnCreateFileDialogListener  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     public static final String TAG = MenuFragment.class.getSimpleName();
     private RecyclerView mFileRecyclerView;
-    private FileManager mFileManager;
+
     private Context context;
     private FloatingActionButton addFileFab;
     // TODO: Rename and change types of parameters
@@ -69,20 +70,22 @@ public class MenuFragment extends Fragment  {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_menu, container, false);
-        mFileManager = new FileManager(getContext());
+
         addFileFab = v.findViewById(R.id.add_fab_menu);
         mFileRecyclerView = v.findViewById(R.id.file_list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mFileRecyclerView.setLayoutManager(linearLayoutManager);
 
-        FileListAdapter messageListAdapter = new FileListAdapter(getContext(), mFileManager.getFilesNames());
+        FileListAdapter messageListAdapter = new FileListAdapter(getContext(), FileManager.getInstance(context).getFilesNames());
         mFileRecyclerView.setAdapter(messageListAdapter);
+        messageListAdapter.notifyDataSetChanged();
         Log.d(TAG, Arrays.toString(context.fileList()));
         addFileFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DialogFragment dialog = new CreateFileDialog();
                 dialog.show(getActivity().getSupportFragmentManager(), null);
+
             }
         });
 
@@ -92,15 +95,15 @@ public class MenuFragment extends Fragment  {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_file_create, menu);
-        menu.getItem(0).setIcon(R.drawable.ic_add_circle_black_24dp);
+        inflater.inflate(R.menu.file_controler_menu, menu);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
-            case R.id.add_file:
+            case R.id.file_delete_menu:
             {
 
             }
@@ -126,6 +129,15 @@ public class MenuFragment extends Fragment  {
         mListener = null;
     }
 
+    @Override
+    public void createFile(String name, String extension) {
+
+    }
+
+    @Override
+    public void errorFileCreate(String error) {
+
+    }
 
 
     /**

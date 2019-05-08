@@ -7,6 +7,7 @@ import com.example.egor.notebook.Databases.SQLiteFileListHandler;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 public class FileManager {
@@ -17,11 +18,19 @@ public class FileManager {
     private  Context context;
     private BufferedWriter bufferedFileOutput;
     private File currentFile;
-
-    public FileManager(Context context)
+    private static FileManager instance;
+    private FileManager(Context context)
     {
         this.context = context;
+    }
+    public static FileManager getInstance(Context context)
+    {
+        if(instance==null)
+        {
+            instance = new FileManager(context);
+        }
 
+        return instance;
     }
     public void addFile(File file)
     {

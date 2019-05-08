@@ -30,11 +30,11 @@ public class SQLiteFileListHandler extends SQLiteOpenHelper {
     private static final String HASH_FIELD = "hash";
     private static final int VERSION = 1;
     private Cursor mCursor;
-    private FileManager fileManager;
+
     private Date mDate;
     public SQLiteFileListHandler(Context context) {
         super(context, NAME, null, VERSION);
-        fileManager = new FileManager(context);
+
     }
 
     @Override
