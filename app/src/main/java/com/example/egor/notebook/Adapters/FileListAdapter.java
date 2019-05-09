@@ -91,7 +91,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileLi
                 String placeholderName = res.getString(R.string.file_create_placeholder_name_dialog);
                 String placeholderExtension = res.getString(R.string.file_list_holder_extension);
                 String placeHolderDate = res.getString(R.string.file_list_holder_date);
-                mTextViewFileName.setText(placeholderName + " " +  fileNames[i]);
+                mTextViewFileName.setText(placeholderName + " " +  fileNames[i] + " #" + i);
                 mTextViewExtension.setText(placeholderExtension+FileManager.getInstance(context).getFileExtension(fileNames[i]));
                 mTextViwFileDate.setText(placeHolderDate);
             }

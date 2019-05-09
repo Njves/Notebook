@@ -13,27 +13,26 @@ import android.view.View;
 
 import android.widget.EditText;
 import android.widget.Toast;
-import com.example.egor.notebook.Fragments.MenuFragment;
 import com.example.egor.notebook.Managers.FileManager;
 import com.example.egor.notebook.R;
 
 import java.io.IOException;
 
 
-public class CreateFileDialog extends DialogFragment {
+public class CreatingFileDialog extends DialogFragment {
     private Context context;
 
     private EditText mFileNameEditText;
     private EditText mFileExtensionEditText;
     public static final String EXTRA_FILE = "com.example.egor.notebook.file";
     private OnUpdateDataListCallback callback;
-    public CreateFileDialog newInstance(String param)
+    public CreatingFileDialog newInstance(String param)
     {
-        CreateFileDialog createFileDialog = new CreateFileDialog();
+        CreatingFileDialog creatingFileDialog = new CreatingFileDialog();
         Bundle args = new Bundle();
         args.putString("param1", param);
-        createFileDialog.setArguments(args);
-        return createFileDialog;
+        creatingFileDialog.setArguments(args);
+        return creatingFileDialog;
     }
     @Override
     public void onAttach(Context context) {
@@ -68,7 +67,7 @@ public class CreateFileDialog extends DialogFragment {
                     Toast.makeText(context, "Заполните все поля!", Toast.LENGTH_SHORT).show();
                 }
             }
-        }).setNegativeButton(R.string.file_create_text_canel_dialog, new DialogInterface.OnClickListener() {
+        }).setNegativeButton(R.string.file_create_text_cancel_dialog, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -81,4 +80,9 @@ public class CreateFileDialog extends DialogFragment {
         void updateList();
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callback = null;
+    }
 }

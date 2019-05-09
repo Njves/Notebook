@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/file_list_holder_name"
-
+        android:textColor="@color/colorHighlight"
         android:textSize="18sp"/>
     <TextView
         android:id="@+id/file_list_item_extension"

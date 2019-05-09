@@ -62,6 +62,29 @@ public class FileManager {
         return "Запись в файл окончена!";
     }
 
+    public void deleteFilesByCount(int count)
+    {
+        String[] fileList = getFilesNames();
+        for (int i = 0; i < count; i++) {
+            context.deleteFile(fileList[i]);
+        }
+
+
+
+    }
+    public void deleteFilesByCount(int count, String[] fileNames)
+    {
+        if(fileNames!=null) {
+            for (int i = 0; i < count; i++) {
+                context.deleteFile(fileNames[i]);
+            }
+        }
+        else
+        {
+//            TODO: Add error
+        }
+
+    }
     public File getCurrentDocument() {
         return currentFile;
     }
@@ -90,9 +113,5 @@ public class FileManager {
         return extension;
     }
 
-    public class FileCreator
-    {
-        public String fileName;
-        public String fileExtension;
-    }
+
 }

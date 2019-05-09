@@ -1,7 +1,6 @@
 package com.example.egor.notebook.Fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
@@ -11,21 +10,17 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.*;
 
-import android.widget.Button;
-import android.widget.Toast;
 import com.example.egor.notebook.Adapters.FileListAdapter;
-import com.example.egor.notebook.Fragments.Dialogs.CreateFileDialog;
+import com.example.egor.notebook.Fragments.Dialogs.CreatingFileDialog;
+import com.example.egor.notebook.Fragments.Dialogs.DeletingFileDialog;
 import com.example.egor.notebook.Managers.FileManager;
 import com.example.egor.notebook.R;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public class MenuFragment extends Fragment implements CreateFileDialog.OnUpdateDataListCallback  {
+public class MenuFragment extends Fragment implements CreatingFileDialog.OnUpdateDataListCallback, DeletingFileDialog.OnDeleteFileCallback  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_FILE = "file";
@@ -34,6 +29,7 @@ public class MenuFragment extends Fragment implements CreateFileDialog.OnUpdateD
     private RecyclerView mFileRecyclerView;
     private FileListAdapter messageListAdapter;
     public static final int REQUEST_CODE = 0;
+    private DialogFragment dialog;
 
     private Context context;
     private FloatingActionButton addFileFab;
@@ -79,14 +75,13 @@ public class MenuFragment extends Fragment implements CreateFileDialog.OnUpdateD
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mFileRecyclerView.setLayoutManager(linearLayoutManager);
 
-        messageListAdapter = new FileListAdapter(getContext(), FileManager.getInstance(context).getFilesNames());
-        mFileRecyclerView.setAdapter(messageListAdapter);
+        initFileListAdapter();
         Log.d(TAG, Arrays.toString(context.fileList()));
         addFileFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFragment dialog = new CreateFileDialog();
-                dialog.show(getActivity().getSupportFragmentManager(), null);
+                dialog = new CreatingFileDialog();
+                dialog.show(getActivity().getSupportFragmentManager(), "creating");
                 dialog.setTargetFragment(MenuFragment.this, REQUEST_CODE);
 
             }
@@ -108,7 +103,11 @@ public class MenuFragment extends Fragment implements CreateFileDialog.OnUpdateD
         {
             case R.id.file_delete_menu:
             {
-
+                dialog = new DeletingFileDialog();
+                dialog.show(getFragmentManager(), "deleting");
+                dialog.setTargetFragment(this, REQUEST_CODE);
+                FileManager.getInstance(context).deleteFilesByCount(1);
+                initFileListAdapter();
             }
         }
         return super.onOptionsItemSelected(item);
@@ -130,16 +129,26 @@ public class MenuFragment extends Fragment implements CreateFileDialog.OnUpdateD
     public void onDetach() {
         super.onDetach();
         mListener = null;
+
     }
 
     @Override
     public void updateList() {
+        initFileListAdapter();
+    }
+
+    public void initFileListAdapter()
+    {
         Log.d(TAG, "Update list in callback" );
         messageListAdapter = new FileListAdapter(getContext(), FileManager.getInstance(context).getFilesNames());
         mFileRecyclerView.setAdapter(messageListAdapter);
         messageListAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onDelete() {
+        initFileListAdapter();
+    }
 
     /**
      * This interface must be implemented by activities that contain this

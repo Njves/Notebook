@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Notebook</string>
+    <string name="app_name">Notepad</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -10,5 +10,7 @@
     <string name="file_create_placeholder_name_dialog">Имя файла</string>
     <string name="file_create_placeholder_extension_dialog">Рассширение файла</string>
     <string name="file_create_text_create_dialog">Создать файл</string>
-    <string name="file_create_text_canel_dialog">Отмена</string>
+    <string name="file_create_text_cancel_dialog">Отмена</string>
+
+    <string name="file_delete_placeholder">Введите число файлов которые хотите удалить</string>
 </resources>
