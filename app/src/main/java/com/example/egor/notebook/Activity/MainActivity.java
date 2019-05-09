@@ -18,7 +18,7 @@ import com.example.egor.notebook.R;
 import java.io.File;
 import java.io.IOException;
 
-public class MainActivity extends AppCompatActivity implements WritingFragment.MenuFragmentInteraction, MenuFragment.OnMenuFragmentDataListener, FileListAdapter.FileListListener, CreateFileDialog.OnCreateFileDialogListener{
+public class MainActivity extends AppCompatActivity implements WritingFragment.MenuFragmentInteraction, MenuFragment.OnMenuFragmentDataListener, FileListAdapter.FileListListener{
     public static final String TAG = MainActivity.class.getSimpleName();
     FragmentManager fragmentManager = getSupportFragmentManager();
     Fragment fragment;
@@ -63,23 +63,4 @@ public class MainActivity extends AppCompatActivity implements WritingFragment.M
         }
     }
 
-
-    @Override
-    public void createFile(String name, String extension) {
-
-        try {
-            File file  =  FileManager.getInstance(this).makeDocument(name, extension);
-            Toast.makeText(this, "Файл создан! Имя файла: " + file.getName(), Toast.LENGTH_SHORT).show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        this.fragment = new MenuFragment();
-        fragmentManager.beginTransaction().replace(R.id.menu_frame,this.fragment).addToBackStack(null).commit();
-    }
-
-    @Override
-    public void errorFileCreate(String error) {
-
-    }
 }

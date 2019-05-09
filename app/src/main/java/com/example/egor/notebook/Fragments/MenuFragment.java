@@ -20,23 +20,26 @@ import com.example.egor.notebook.R;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public class MenuFragment extends Fragment implements CreateFileDialog.OnCreateFileDialogListener  {
+public class MenuFragment extends Fragment implements CreateFileDialog.OnUpdateDataListCallback  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_FILE = "file";
     private static final String ARG_PARAM2 = "param2";
     public static final String TAG = MenuFragment.class.getSimpleName();
     private RecyclerView mFileRecyclerView;
+    private FileListAdapter messageListAdapter;
+    public static final int REQUEST_CODE = 0;
 
     private Context context;
     private FloatingActionButton addFileFab;
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private File fileParam;
+
 
     private OnMenuFragmentDataListener mListener;
 
@@ -46,11 +49,11 @@ public class MenuFragment extends Fragment implements CreateFileDialog.OnCreateF
 
 
     // TODO: Rename and change types and number of parameters
-    public static MenuFragment newInstance(String param1, String param2) {
+    public static MenuFragment newInstance(File fileParam) {
         MenuFragment fragment = new MenuFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putSerializable(ARG_FILE, fileParam);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,7 +62,7 @@ public class MenuFragment extends Fragment implements CreateFileDialog.OnCreateF
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            fileParam = (File) getArguments().getSerializable(ARG_FILE);
 
         }
         setHasOptionsMenu(true);
@@ -76,15 +79,15 @@ public class MenuFragment extends Fragment implements CreateFileDialog.OnCreateF
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mFileRecyclerView.setLayoutManager(linearLayoutManager);
 
-        FileListAdapter messageListAdapter = new FileListAdapter(getContext(), FileManager.getInstance(context).getFilesNames());
+        messageListAdapter = new FileListAdapter(getContext(), FileManager.getInstance(context).getFilesNames());
         mFileRecyclerView.setAdapter(messageListAdapter);
-        messageListAdapter.notifyDataSetChanged();
         Log.d(TAG, Arrays.toString(context.fileList()));
         addFileFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DialogFragment dialog = new CreateFileDialog();
                 dialog.show(getActivity().getSupportFragmentManager(), null);
+                dialog.setTargetFragment(MenuFragment.this, REQUEST_CODE);
 
             }
         });
@@ -130,13 +133,11 @@ public class MenuFragment extends Fragment implements CreateFileDialog.OnCreateF
     }
 
     @Override
-    public void createFile(String name, String extension) {
-
-    }
-
-    @Override
-    public void errorFileCreate(String error) {
-
+    public void updateList() {
+        Log.d(TAG, "Update list in callback" );
+        messageListAdapter = new FileListAdapter(getContext(), FileManager.getInstance(context).getFilesNames());
+        mFileRecyclerView.setAdapter(messageListAdapter);
+        messageListAdapter.notifyDataSetChanged();
     }
 
 
