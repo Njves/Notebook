@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.*;
 
+import android.widget.Toast;
 import com.example.egor.notebook.Adapters.FileListAdapter;
 import com.example.egor.notebook.Fragments.Dialogs.CreatingFileDialog;
 import com.example.egor.notebook.Fragments.Dialogs.DeletingFileDialog;
@@ -67,7 +68,6 @@ public class MenuFragment extends Fragment implements CreatingFileDialog.OnUpdat
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_menu, container, false);
 
         addFileFab = v.findViewById(R.id.add_fab_menu);
@@ -76,14 +76,20 @@ public class MenuFragment extends Fragment implements CreatingFileDialog.OnUpdat
         mFileRecyclerView.setLayoutManager(linearLayoutManager);
 
         initFileListAdapter();
+
         Log.d(TAG, Arrays.toString(context.fileList()));
         addFileFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog = new CreatingFileDialog();
-                dialog.show(getActivity().getSupportFragmentManager(), "creating");
-                dialog.setTargetFragment(MenuFragment.this, REQUEST_CODE);
-
+                if(getActivity().getSupportFragmentManager() != null) {
+                    dialog.show(getActivity().getSupportFragmentManager(), "creating");
+                    dialog.setTargetFragment(MenuFragment.this, REQUEST_CODE);
+                }else
+                {
+                    Log.e(TAG, "FragmentManager is null");
+                    Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -106,8 +112,7 @@ public class MenuFragment extends Fragment implements CreatingFileDialog.OnUpdat
                 dialog = new DeletingFileDialog();
                 dialog.show(getFragmentManager(), "deleting");
                 dialog.setTargetFragment(this, REQUEST_CODE);
-                FileManager.getInstance(context).deleteFilesByCount(1);
-                initFileListAdapter();
+
             }
         }
         return super.onOptionsItemSelected(item);

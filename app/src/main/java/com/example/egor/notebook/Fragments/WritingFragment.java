@@ -3,6 +3,7 @@ package com.example.egor.notebook.Fragments;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,10 +27,11 @@ public class WritingFragment extends Fragment {
     private EditText mInputTitleFile;
     private EditText mInputFieldEditText;
     private TextView mFileContentTextView;
-    private Button mWriteOnFileButton;
+    private Button mWriteInFileButton;
     private Button mOpenFileButton;
     private FileOutputStream mFileOutputStream;
     private FileInputStream mFileInputStream;
+    private BufferedReader mBufferedReader;
     private Context context;
     private Thread rxThread;
     private String mParamFileName;
@@ -61,37 +63,25 @@ public class WritingFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_writing, container, false);
         mInputFieldEditText = view.findViewById(R.id.input_field);
         mOpenFileButton = view.findViewById(R.id.open);
-        mWriteOnFileButton = view.findViewById(R.id.write);
+        mWriteInFileButton = view.findViewById(R.id.write);
         mFileContentTextView = view.findViewById(R.id.file_content);
         mInputTitleFile = view.findViewById(R.id.input_file_name);
 
         mInputTitleFile.setText(mParamFileName);
-        mWriteOnFileButton.setOnClickListener(new View.OnClickListener() {
+        mWriteInFileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                try {
+                    FileManager.getInstance(context).writeInFile(mParamFileName,mInputFieldEditText.getText().toString());
 
-                        try {
-//                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(context.openFileOutput(mInputTitleFile.getText().toString() + ".txt", Context.MODE_PRIVATE)));
-//                            writer.write(mInputFieldEditText.getText().toString());
-//                            writer.flush();
-
-                            FileManager.getInstance(context).makeDocument(mInputTitleFile.getText().toString(), ".txt");
-//                            TODO:Replace column in DB
-                            Toast.makeText(context,  FileManager.getInstance(context).writeInFile(mInputFieldEditText.getText().toString()), Toast.LENGTH_SHORT).show();
-                            
-
-
-
-                            Log.d(TAG, Arrays.toString(context.fileList()));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
 
                 Toast.makeText(context, "Файл успешно записан!", Toast.LENGTH_SHORT).show();
@@ -103,21 +93,18 @@ public class WritingFragment extends Fragment {
         mOpenFileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String fileName = mInputTitleFile.getText().toString();
                 try {
-                    String fileName =  mInputTitleFile.getText().toString() + ".txt";
-                    Log.d(TAG, fileName);
-                    FileInputStream fis = context.openFileInput(fileName);
-                    byte[] bytes = new byte[fis.available()];
-                    fis.read(bytes);
-                    String text = new String(bytes);
-                    mFileContentTextView.setText(text);
-
-                    Log.d(TAG, text);
+                    mBufferedReader = new BufferedReader(new InputStreamReader(context.openFileInput(fileName)));
+                    String fileText = mBufferedReader.readLine();
+                    mFileContentTextView.setText(fileText);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
+                    Log.wtf(TAG, "Не удалось открыть файла: " + e);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
             }
         });
         return view;
@@ -154,6 +141,6 @@ public class WritingFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-   
+
 
 }

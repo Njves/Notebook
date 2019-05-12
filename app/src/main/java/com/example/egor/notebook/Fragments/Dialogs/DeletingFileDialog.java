@@ -25,7 +25,7 @@ public class DeletingFileDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.delete_files_dialog,null);
         mEditTextCount = dialogView.findViewById(R.id.edit_text_delete_dialog);
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity()).setTitle("Удалить файлы").setPositiveButton(R.string.file_delete_placeholder, new DialogInterface.OnClickListener() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity()).setTitle("Удалить файлы").setView(dialogView).setPositiveButton(R.string.file_delete_placeholder, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int count = Integer.parseInt(mEditTextCount.getText().toString());
@@ -33,6 +33,7 @@ public class DeletingFileDialog extends DialogFragment {
                 if(count>=0) {
                     if(count<fileLength) {
                         FileManager.getInstance(getContext()).deleteFilesByCount(count);
+                        callback.onDelete();
                     }
                     else
                     {

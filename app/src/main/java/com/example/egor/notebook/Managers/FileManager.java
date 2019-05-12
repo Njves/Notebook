@@ -53,11 +53,11 @@ public class FileManager {
         bufferedFileOutput.close();
         return "Запись в файл окончена!";
     }
-    public String writeInFile(File file, String text) throws IOException {
-        bufferedFileOutput = new BufferedWriter(new OutputStreamWriter(context.openFileOutput(file.getName(), Context.MODE_PRIVATE)));
+    public String writeInFile(String fileName, String text) throws IOException {
 
+
+        bufferedFileOutput = new BufferedWriter(new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE)));
         bufferedFileOutput.write(text);
-        bufferedFileOutput.flush();
         bufferedFileOutput.close();
         return "Запись в файл окончена!";
     }

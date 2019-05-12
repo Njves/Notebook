@@ -3,9 +3,7 @@ package com.example.egor.notebook.Adapters;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +12,11 @@ import com.example.egor.notebook.Activity.MainActivity;
 import com.example.egor.notebook.Managers.FileManager;
 import com.example.egor.notebook.R;
 
-import java.io.File;
-import java.util.ArrayList;
-
 public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileListHolder>
 {
     private Context context;
     private String[] fileNames;
-
+    private View.OnClickListener mOnItemClickListener;
     private FileListListener mListener;
 
     private int count;
@@ -39,8 +34,8 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileLi
         int layoutIdForListItem = R.layout.file_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         View v = inflater.inflate(layoutIdForListItem,viewGroup, false);
-        FileListHolder fileListViewHolder = new FileListHolder(v);
-        return fileListViewHolder;
+
+        return new FileListHolder(v);
     }
 
     @Override
@@ -55,6 +50,9 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileLi
         count = fileNames.length;
         return count;
     }
+
+
+
     public interface FileListListener
     {
         void showWritingFragment(String fileName);
@@ -64,7 +62,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileLi
         private TextView mTextViewFileName;
         private TextView mTextViwFileDate;
         private TextView mTextViewExtension;
-        public FileListHolder(@NonNull final View itemView) {
+        public FileListHolder(@NonNull View itemView) {
             super(itemView);
             mTextViewFileName = itemView.findViewById(R.id.file_list_item_name);
             mTextViwFileDate = itemView.findViewById(R.id.file_list_item_creation_date);
@@ -74,7 +72,8 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileLi
                 public void onClick(View v) {
                     if(context instanceof MainActivity) {
                         mListener = (MainActivity) context;
-                        mListener.showWritingFragment(mTextViewFileName.getText().toString().substring(10));
+                        String[] fileNameArray = FileManager.getInstance(context).getFilesNames();
+                        mListener.showWritingFragment(fileNameArray[getAdapterPosition()]);
                     }
                     else
                     {
