@@ -29,9 +29,9 @@ public class DeletingFileDialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int count = Integer.parseInt(mEditTextCount.getText().toString());
-                int fileLength = FileManager.getInstance(getContext()).getFilesNames().length;
-                if(count>=0) {
-                    if(count<fileLength) {
+                int fileListLength = FileManager.getInstance(getContext()).getFilesNames().length;
+                if(count>0) {
+                    if(count<=fileListLength) {
                         FileManager.getInstance(getContext()).deleteFilesByCount(count);
                         callback.onDelete();
                     }

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.egor.notebook.Managers.FileManager;
 import com.example.egor.notebook.R;
 
+import java.io.File;
 import java.io.IOException;
 
 
@@ -56,7 +57,16 @@ public class CreatingFileDialog extends DialogFragment {
                 if(!mFileNameEditText.getText().toString().equals(" ") || !mFileExtensionEditText.getText().toString().equals(" "))
                 {
                     try {
-                        FileManager.getInstance(context).makeDocument(mFileNameEditText.getText().toString(), mFileExtensionEditText.getText().toString());
+                        if(mFileExtensionEditText.getText().toString().contains("."))
+                        {
+                            makeFile(mFileNameEditText.getText().toString(), mFileExtensionEditText.getText().toString());
+                        }
+                        else
+                        {
+                            makeFile(mFileNameEditText.getText().toString(), "."+ mFileExtensionEditText.getText().toString());
+                        }
+
+
                         callback.updateList();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -79,7 +89,9 @@ public class CreatingFileDialog extends DialogFragment {
     {
         void updateList();
     }
-
+    public  void makeFile(String name, String extension) throws IOException {
+        FileManager.getInstance(context).makeDocument(name, extension);
+    }
     @Override
     public void onDetach() {
         super.onDetach();

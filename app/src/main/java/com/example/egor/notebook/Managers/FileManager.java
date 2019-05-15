@@ -46,7 +46,19 @@ public class FileManager {
         return file;
 
     }
+    public File getFileByName(String fileName)
+    {
+        String[] files = getFilesNames();
 
+        for (int i = 0; i < files.length; i++) {
+            if(fileName.equals(files[i]))
+            {
+                File file = new File(fileName);
+                return file;
+            }
+        }
+        return null;
+    }
     public String writeInFile(String text) throws IOException {
         bufferedFileOutput.write(text);
         bufferedFileOutput.flush();

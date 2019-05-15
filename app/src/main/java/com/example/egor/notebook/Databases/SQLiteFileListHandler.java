@@ -30,6 +30,7 @@ public class SQLiteFileListHandler extends SQLiteOpenHelper {
     private static final String HASH_FIELD = "hash";
     private static final int VERSION = 1;
     private Cursor mCursor;
+    private ContentValues mContentValues;
 
     private Date mDate;
     public SQLiteFileListHandler(Context context) {
@@ -39,7 +40,7 @@ public class SQLiteFileListHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE " + "`"+TABLE_NAME + "`" + "(" + ID_FIELD + " integer primary key AUTOINCREMENT," + FILE_NAME_FIELD + " text not null unique," + CREATION_DATE_FIELD + " date not null, " + PATH_FIELD + " text not null, " + SD_CARD_EXIST_FIELD + " boolean not null, " + FILE_SIZE_FIELD + " int, " + HASH_FIELD + " text not null);";
+        String sql = "CREATE TABLE " + "`"+TABLE_NAME + "`" + "(" + ID_FIELD + " integer primary key AUTOINCREMENT," + FILE_NAME_FIELD + " text not null ," + CREATION_DATE_FIELD + " date not null, " + PATH_FIELD + " text not null, " + SD_CARD_EXIST_FIELD + " boolean not null, " + FILE_SIZE_FIELD + " int, " + HASH_FIELD + " text not null);";
         Log.d(TAG, sql);
         db.execSQL(sql);
     }
@@ -58,17 +59,18 @@ public class SQLiteFileListHandler extends SQLiteOpenHelper {
         long fileSize = file.length();
         int fileHash = file.hashCode();
         Log.d(TAG, "Имя: " + fileName + ", Дата: " + fileDate + ", Путь:" + filePath + ", Размер: " + fileSize + ", Хеш: " + fileHash);
-        ContentValues cv = new ContentValues();
-        cv.put(FILE_NAME_FIELD, fileName);
-        cv.put(CREATION_DATE_FIELD, fileDate);
-        cv.put(PATH_FIELD, filePath);
-        cv.put(SD_CARD_EXIST_FIELD, isFileSdCard);
-        cv.put(FILE_SIZE_FIELD, fileSize);
-        cv.put(HASH_FIELD, fileHash);
+        mContentValues= new ContentValues();
+        mContentValues.put(FILE_NAME_FIELD, fileName);
+        mContentValues.put(CREATION_DATE_FIELD, fileDate);
+        mContentValues.put(PATH_FIELD, filePath);
+        mContentValues.put(SD_CARD_EXIST_FIELD, isFileSdCard);
+        mContentValues.put(FILE_SIZE_FIELD, fileSize);
+        mContentValues.put(HASH_FIELD, fileHash);
 
         SQLiteDatabase db = this.getWritableDatabase();
-        long id = db.insert(TABLE_NAME, null, cv);
+        long id = db.insert(TABLE_NAME, null, mContentValues);
         Log.i(TAG, "Inset row - " + id);
+        db.close();
 
 
     }
@@ -89,6 +91,13 @@ public class SQLiteFileListHandler extends SQLiteOpenHelper {
             Log.d(TAG, "Номер строки: " + id +", Имя: " + name + ", Дата: " + date + ", Путь:" + path + ", Размер: " + size + ", Хеш: " + hash);
 
         }
+    }
+    public void updateFileInDB(File file)
+    {
+        String query = "UPDATE " + TABLE_NAME + " SET " + FILE_SIZE_FIELD + " = " + file.length() + ", " + HASH_FIELD + " = " + file.hashCode() + " WHERE " + FILE_NAME_FIELD + " = " + "'" + file.getName() + "';";
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.rawQuery(query, null);
+        db.close();
     }
 
 

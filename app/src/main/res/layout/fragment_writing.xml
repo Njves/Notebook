@@ -16,11 +16,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Введите имя файла..."/>
-        <EditText
-            android:id="@+id/input_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Введите текст..."/>
+
 
     </LinearLayout>
     <LinearLayout
@@ -28,9 +24,9 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
         <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
-            <TextView
+            <EditText
                 android:id="@+id/file_content"
-                android:layout_width="match_parent" android:layout_height="match_parent"/>
+                android:layout_width="match_parent" android:layout_height="wrap_content"/>
         </ScrollView>
     </LinearLayout>
     <LinearLayout
@@ -46,10 +42,7 @@
             android:layout_height="wrap_content"
             android:text="write"/>
 
-        <Button
-            android:id="@+id/open"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Open file"/>
+
         
     </LinearLayout>
 
