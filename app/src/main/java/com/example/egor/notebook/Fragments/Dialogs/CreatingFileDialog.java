@@ -10,13 +10,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
-
 import android.widget.EditText;
 import android.widget.Toast;
 import com.example.egor.notebook.Managers.FileManager;
 import com.example.egor.notebook.R;
 
-import java.io.File;
 import java.io.IOException;
 
 
@@ -60,6 +58,8 @@ public class CreatingFileDialog extends DialogFragment {
                         if(mFileExtensionEditText.getText().toString().contains("."))
                         {
                             makeFile(mFileNameEditText.getText().toString(), mFileExtensionEditText.getText().toString());
+                            String[] fl = FileManager.getInstance(context).getFilesNames();
+                            FileManager.getInstance(context).replaceFileInSdCard(fl[0]);
                         }
                         else
                         {

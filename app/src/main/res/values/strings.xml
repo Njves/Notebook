@@ -12,5 +12,9 @@
     <string name="file_create_text_create_dialog">Создать файл</string>
     <string name="file_create_text_cancel_dialog">Отмена</string>
 
-    <string name="file_delete_placeholder">Введите число файлов которые хотите удалить</string>
+    <string name="file_delete_placeholder">Введите имя файла...</string>
+    <string name="current_action_list">Список файлов</string>
+
+
+
 </resources>

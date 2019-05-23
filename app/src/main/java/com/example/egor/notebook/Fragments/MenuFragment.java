@@ -5,11 +5,12 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.*;
-
 import android.widget.Toast;
 import com.example.egor.notebook.Adapters.FileListAdapter;
 import com.example.egor.notebook.Fragments.Dialogs.CreatingFileDialog;
@@ -66,12 +67,20 @@ public class MenuFragment extends Fragment implements CreatingFileDialog.OnUpdat
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        actionBar.setTitle(R.string.current_action_list);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_menu, container, false);
 
         addFileFab = v.findViewById(R.id.add_fab_menu);
         mFileRecyclerView = v.findViewById(R.id.file_list);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         mFileRecyclerView.setLayoutManager(linearLayoutManager);
 

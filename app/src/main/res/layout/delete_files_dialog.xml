@@ -4,15 +4,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <EditText
-                android:id="@+id/edit_text_delete_dialog"
+
+        <Spinner
+                android:id="@+id/spinner_remove_file_dialog"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:inputType="number"
-                android:hint="@string/file_delete_placeholder"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"/>
+                android:layout_marginRight="16dp"
+        />
 
 
 </LinearLayout>

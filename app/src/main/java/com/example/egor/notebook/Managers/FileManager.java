@@ -1,18 +1,21 @@
 package com.example.egor.notebook.Managers;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 import com.example.egor.notebook.Databases.SQLiteFileListHandler;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
 
 public class FileManager {
 
-    private File file;
+
     private SQLiteFileListHandler fileListDB;
     private ArrayList<File> mFileArrayList = new ArrayList<>();
     private  Context context;
@@ -37,14 +40,17 @@ public class FileManager {
         mFileArrayList.add(file);
     }
     public File makeDocument(String title,String extension) throws IOException {
-
-        File file = new File(title+extension);
-        bufferedFileOutput = new BufferedWriter(new OutputStreamWriter(context.openFileOutput(file.getName(), Context.MODE_PRIVATE)));
-        fileListDB = new SQLiteFileListHandler(context);
-        fileListDB.addFileOnDB(file);
-        currentFile = file;
-        return file;
-
+        title = title.trim();
+        extension = extension.trim();
+        if(!extension.equals(" ")) {
+            File file = new File(title + extension);
+            bufferedFileOutput = new BufferedWriter(new OutputStreamWriter(context.openFileOutput(file.getName(), Context.MODE_PRIVATE)));
+            fileListDB = new SQLiteFileListHandler(context);
+            fileListDB.addFileOnDB(file);
+            currentFile = file;
+            return file;
+        }
+        return null;
     }
     public File getFileByName(String fileName)
     {
@@ -60,6 +66,7 @@ public class FileManager {
         return null;
     }
     public String writeInFile(String text) throws IOException {
+
         bufferedFileOutput.write(text);
         bufferedFileOutput.flush();
         bufferedFileOutput.close();
@@ -67,11 +74,26 @@ public class FileManager {
     }
     public String writeInFile(String fileName, String text) throws IOException {
 
-
+        fileName = fileName.trim();
         bufferedFileOutput = new BufferedWriter(new OutputStreamWriter(context.openFileOutput(fileName, Context.MODE_PRIVATE)));
         bufferedFileOutput.write(text);
         bufferedFileOutput.close();
         return "Запись в файл окончена!";
+    }
+    public void deleteFileByName(String name)
+    {
+        name = name.trim();
+       String[] fileList = getFilesNames();
+        for (int i = 0; i < fileList.length; i++) {
+            if(fileList[i].equals(name))
+            {
+                context.deleteFile(name);
+            }
+            else
+            {
+                Toast.makeText(context, "Файла не существует", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public void deleteFilesByCount(int count)
@@ -124,6 +146,18 @@ public class FileManager {
         }
         return extension;
     }
+    public void replaceFileInSdCard(String fileName)
+    {
+        if(!Environment.getExternalStorageDirectory().equals(Environment.MEDIA_MOUNTED))
+        {
+            Log.d("FileManager", "SD-Карта не доступна");
+        }
+        File sdPath = Environment.getExternalStorageDirectory();
+        sdPath = new File(sdPath.getAbsoluteFile() + "/" + fileName);
+        sdPath.mkdirs();
+        File sdFile = new File(sdPath, fileName);
 
+
+    }
 
 }
