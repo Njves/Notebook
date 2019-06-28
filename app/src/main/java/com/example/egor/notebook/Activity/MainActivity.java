@@ -10,6 +10,7 @@ import com.example.egor.notebook.Adapters.FileListAdapter;
 import com.example.egor.notebook.Databases.SQLiteFileListHandler;
 import com.example.egor.notebook.Fragments.MenuFragment;
 import com.example.egor.notebook.Fragments.WritingFragment;
+import com.example.egor.notebook.Managers.FileManager;
 import com.example.egor.notebook.R;
 
 public class MainActivity extends AppCompatActivity implements WritingFragment.MenuFragmentInteraction, MenuFragment.OnMenuFragmentDataListener, FileListAdapter.FileListListener, FragmentManager.OnBackStackChangedListener {
@@ -23,11 +24,14 @@ public class MainActivity extends AppCompatActivity implements WritingFragment.M
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().setTitle(R.string.current_action_list);
+        FileManager.getInstance(this).makeExternalDirectory();
         fragment = new MenuFragment();
         fragmentManager.beginTransaction().add(R.id.menu_frame,fragment).commit();
         Log.d(TAG,getApplicationInfo().dataDir);
         SQLiteFileListHandler sql = new SQLiteFileListHandler(this);
         sql.getTable();
+
+
 
 
 
@@ -68,5 +72,11 @@ public class MainActivity extends AppCompatActivity implements WritingFragment.M
     @Override
     public void onBackStackChanged() {
 //        getSupportActionBar().setTitle(R.string.current_action_list);
+    }
+
+
+    @Override
+    public void updateAdapter(String dir) {
+
     }
 }

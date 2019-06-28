@@ -6,22 +6,24 @@ import android.util.Log;
 import android.widget.Toast;
 import com.example.egor.notebook.Databases.SQLiteFileListHandler;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class FileManager {
 
+    private static final String TAG = FileManager.class.getSimpleName();
+    private final File APP_DIRECTORY = new File(Environment.getExternalStorageDirectory() + "notepad/files/");
 
     private SQLiteFileListHandler fileListDB;
-    private ArrayList<File> mFileArrayList = new ArrayList<>();
-    private  Context context;
+    private Context context;
     private BufferedWriter bufferedFileOutput;
+    private BufferedReader fileReader;
+    private PrintWriter fileWriter;
     private File currentFile;
     private static FileManager instance;
+    public final static String DEFAULT_EXTENSION = ".txt";
     private FileManager(Context context)
     {
         this.context = context;
@@ -35,36 +37,61 @@ public class FileManager {
 
         return instance;
     }
-    public void addFile(File file)
-    {
-        mFileArrayList.add(file);
-    }
+
     public File makeDocument(String title,String extension) throws IOException {
         title = title.trim();
         extension = extension.trim();
+
         if(!extension.equals(" ")) {
-            File file = new File(title + extension);
+
+            File file = new File(context.getFilesDir() + File.separator + title + extension);
             bufferedFileOutput = new BufferedWriter(new OutputStreamWriter(context.openFileOutput(file.getName(), Context.MODE_PRIVATE)));
             fileListDB = new SQLiteFileListHandler(context);
             fileListDB.addFileOnDB(file);
-            currentFile = file;
             return file;
         }
+
         return null;
     }
+    // Функции для работы с директориями
+    public File createDirectory(String dirName)
+    {
+        File mainDir = context.getFilesDir();
+        File childDir = new File(mainDir, dirName);
+        childDir.mkdirs();
+        return childDir;
+    }
+    public List<File> getFileListInMainDir()
+    {
+        List<File> files = new ArrayList<>();
+        File file = context.getFilesDir();
+
+        files.addAll(Arrays.asList(file.listFiles()));
+        Log.d(TAG, files.toString() + " - Files in main dir");
+        return files;
+    }
+    public List<File> getChildFileList(String dir)
+    {
+
+        File mainDir = context.getFilesDir();
+        File childDir = new File(mainDir, dir);
+        System.out.println(childDir);
+        List<File> list = new ArrayList<>();
+        for (int i = 0; i < childDir.listFiles().length; i++) {
+            list.add(childDir.listFiles()[i]);
+        }
+        Log.d(TAG, "Название директории: " + dir + ". Список файлов: " + list.toString());
+        return list;
+    }
+
+
     public File getFileByName(String fileName)
     {
-        String[] files = getFilesNames();
-
-        for (int i = 0; i < files.length; i++) {
-            if(fileName.equals(files[i]))
-            {
-                File file = new File(fileName);
-                return file;
-            }
-        }
-        return null;
+        File file;
+        file = new File(context.getFilesDir() + File.separator + fileName);
+        return file;
     }
+
     public String writeInFile(String text) throws IOException {
 
         bufferedFileOutput.write(text);
@@ -83,7 +110,7 @@ public class FileManager {
     public void deleteFileByName(String name)
     {
         name = name.trim();
-       String[] fileList = getFilesNames();
+        String[] fileList = getFilesNames();
         for (int i = 0; i < fileList.length; i++) {
             if(fileList[i].equals(name))
             {
@@ -95,7 +122,11 @@ public class FileManager {
             }
         }
     }
-
+    public String getFileDate(String fileName)
+    {
+        fileListDB = new SQLiteFileListHandler(context);
+        return fileListDB.getFileDate(fileName);
+    }
     public void deleteFilesByCount(int count)
     {
         String[] fileList = getFilesNames();
@@ -119,6 +150,8 @@ public class FileManager {
         }
 
     }
+
+
     public File getCurrentDocument() {
         return currentFile;
     }
@@ -129,8 +162,16 @@ public class FileManager {
     public String[] getFilesNames()
     {
         Log.d("FileManager", Arrays.toString(context.fileList()));
+
         return context.fileList();
     }
+    public String[] getFilesListByName(String dirName)
+    {
+
+        File childDir = new File(context.getFilesDir(), dirName);
+        return childDir.list();
+    }
+
     public String getFileExtension(String fileName)
     {
         String extension = "";
@@ -144,20 +185,40 @@ public class FileManager {
 //            TODO: Create error list and code
             extension = "Неизвестное рассширение";
         }
+
+
         return extension;
     }
-    public void replaceFileInSdCard(String fileName)
-    {
-        if(!Environment.getExternalStorageDirectory().equals(Environment.MEDIA_MOUNTED))
-        {
-            Log.d("FileManager", "SD-Карта не доступна");
-        }
-        File sdPath = Environment.getExternalStorageDirectory();
-        sdPath = new File(sdPath.getAbsoluteFile() + "/" + fileName);
-        sdPath.mkdirs();
-        File sdFile = new File(sdPath, fileName);
 
+    public String getFileName(String fileName)
+    {
+        String name = "";
+        int i = fileName.lastIndexOf(".");
+        if(i>0)
+        {
+            name = fileName.substring(i, name.length());
+            return name;
+        }
+
+        return null;
+    }
+    // Создание рассширенной директории в файловой системе устройства
+    public void makeExternalDirectory() {
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            Log.e(TAG, "SD-Card is missing");
+            Toast.makeText(context, "SD-Карта отсутствует", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (!APP_DIRECTORY.exists()) {
+            APP_DIRECTORY.mkdirs();
+        } else {
+            Toast.makeText(context, "Директория уже создана!", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
+
 }
+
+

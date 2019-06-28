@@ -3,14 +3,12 @@ package com.example.egor.notebook.Databases;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import com.example.egor.notebook.Managers.FileManager;
 
 import java.io.File;
-import java.util.Calendar;
+import java.text.DateFormat;
 import java.util.Date;
 
 
@@ -53,7 +51,9 @@ public class SQLiteFileListHandler extends SQLiteOpenHelper {
     {
         String fileName = file.getName();
         mDate = new Date();
-        String fileDate = mDate.toString();
+
+        DateFormat df = DateFormat.getDateInstance();
+        String fileDate = df.format(mDate);
         String filePath = file.getAbsolutePath();
         boolean isFileSdCard = file.getAbsolutePath().contains("sd_card");
         long fileSize = file.length();
@@ -74,6 +74,15 @@ public class SQLiteFileListHandler extends SQLiteOpenHelper {
 
 
     }
+    public String getFileDate(String fileName)
+    {
+        String sql = "SELECT " + CREATION_DATE_FIELD + " FROM " + TABLE_NAME + " WHERE " + FILE_NAME_FIELD + "=" + "'" + fileName + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        mCursor = db.rawQuery(sql, null);
+        mCursor.moveToFirst();
+        String date = mCursor.getString(mCursor.getColumnIndex(CREATION_DATE_FIELD));
+        return date;
+    }
     public void getTable()
     {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -85,18 +94,31 @@ public class SQLiteFileListHandler extends SQLiteOpenHelper {
             String id = cursor.getString(cursor.getColumnIndex(ID_FIELD));
             String name = cursor.getString(cursor.getColumnIndex(FILE_NAME_FIELD));
             String date = cursor.getString(cursor.getColumnIndex(CREATION_DATE_FIELD));
-            String path = cursor.getString(cursor.getColumnIndex(SD_CARD_EXIST_FIELD));
+            String path = cursor.getString(cursor.getColumnIndex(PATH_FIELD));
             String size = cursor.getString(cursor.getColumnIndex(FILE_SIZE_FIELD));
             String hash = cursor.getString(cursor.getColumnIndex(HASH_FIELD));
             Log.d(TAG, "Номер строки: " + id +", Имя: " + name + ", Дата: " + date + ", Путь:" + path + ", Размер: " + size + ", Хеш: " + hash);
 
         }
     }
-    public void updateFileInDB(File file)
+    public void updateFileInDB(File file, boolean isContainsSDCard)
     {
-        String query = "UPDATE " + TABLE_NAME + " SET " + FILE_SIZE_FIELD + " = " + file.length() + ", " + HASH_FIELD + " = " + file.hashCode() + " WHERE " + FILE_NAME_FIELD + " = " + "'" + file.getName() + "';";
+        /*String query = "UPDATE " + TABLE_NAME + " SET " + FILE_SIZE_FIELD + " = " + file.length() + ", " + HASH_FIELD + " = " + file.hashCode() + " WHERE " + FILE_NAME_FIELD + " = " + "'" + file.getName() + "';";
         SQLiteDatabase db = this.getWritableDatabase();
-        db.rawQuery(query, null);
+        db.rawQuery(query, null);*/
+        SQLiteDatabase db = this.getWritableDatabase();
+        mContentValues= new ContentValues();
+        mContentValues.put(FILE_NAME_FIELD, file.getName());
+        mContentValues.put(PATH_FIELD, file.getAbsolutePath());
+        mDate = new Date();
+        DateFormat df = DateFormat.getDateInstance();
+        String fileDate = df.format(mDate);
+        mContentValues.put(CREATION_DATE_FIELD, fileDate);
+        mContentValues.put(SD_CARD_EXIST_FIELD, isContainsSDCard);
+        mContentValues.put(PATH_FIELD, file.getAbsolutePath());
+        mContentValues.put(FILE_SIZE_FIELD, file.length());
+        mContentValues.put(HASH_FIELD, file.hashCode());
+        db.update(TABLE_NAME, mContentValues, null, null);
         db.close();
     }
 

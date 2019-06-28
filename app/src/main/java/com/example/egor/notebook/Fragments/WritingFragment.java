@@ -53,6 +53,7 @@ public class WritingFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mArgFileName = getArguments().getString(ARG_PARAM1);
+            Log.d(TAG, mArgFileName);
         }
     }
 
@@ -144,7 +145,7 @@ public class WritingFragment extends Fragment {
                 FileManager.getInstance(context).writeInFile(mArgFileName,mFileContentTextView.getText().toString());
                 SQLiteFileListHandler sqLite = new SQLiteFileListHandler(getContext());
                 File file = FileManager.getInstance(context).getFileByName(mArgFileName);
-                sqLite.updateFileInDB(file);
+                sqLite.updateFileInDB(file, false);
                 sqLite.getTable();
                 mBufferedReader = new BufferedReader(new InputStreamReader(context.openFileInput(file.getName())));
             } catch (IOException e) {
